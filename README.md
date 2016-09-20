@@ -2,7 +2,7 @@
 A python package for making kernel density estimation plots for the magnetic field distribution of solar active regions.
 
 ##Installation
-Make sure you have sunpy installed and suds. If they are not already installed, open a terminal window and type:
+Make sure you have [sunpy](http://sunpy.org/) installed and suds. If they are not already installed, open a terminal window and type:
 
     $ pip install suds
     $ pip install sunpy
