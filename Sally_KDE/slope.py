@@ -47,7 +47,7 @@ def split_kde_data_array(myarray):
     split into 2 arrays, one for positive B and one for negative
     '''
     mya = copy.deepcopy(myarray)
-    mid = mya.shape[1]/2
+    mid = int(mya.shape[1]/2)
     
     parray = mya[:, mid:]
     narray = mya[:, :mid]

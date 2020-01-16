@@ -6,25 +6,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import sunpy.map
+from sunpy.net import Fido, attrs
 import astropy.units as u
+from astropy.coordinates import SkyCoord
 
 from Sally_KDE import radialise, kde, slope
 
 data_directory = tempfile.mkdtemp(prefix='KDE_example')
 
 ### download data ###
-from sunpy.net import vso
-client = vso.VSOClient()
-result = client.query(vso.attrs.Time((2015, 11, 3, 13, 30), (2015, 11, 3, 13, 31)), 
-                      vso.attrs.Instrument('hmi'), vso.attrs.Physobs('LOS_magnetic_field'))
-download = client.get(result, path=os.path.join(data_directory, 'decaying_region.fits')).wait()
+result = Fido.search(attrs.Time((2015, 11, 3, 13, 30), (2015, 11, 3, 13, 31)),
+                     attrs.Instrument('hmi'), attrs.vso.Physobs('LOS_magnetic_field'))
+download = Fido.fetch(result, path=os.path.join(data_directory, 'decaying_region.fits'))
 # Note: to save the file with its proper file name, use path=os.path.join(data_directory, '{file}')
 
 ### open data file, make submap and radialse ###
 mymap = sunpy.map.Map(os.path.join(data_directory, 'decaying_region.fits')).rotate()
-smap = mymap.submap(u.quantity.Quantity([-250, 250]*u.arcsec),
-                    u.quantity.Quantity([-450, -200]*u.arcsec))
-rsmap = radialise.map_rad(smap) # radialise submap
+bottom_left = SkyCoord(-450*u.arcsec, -100*u.arcsec, frame=mymap.coordinate_frame)
+top_right = SkyCoord(100*u.arcsec, 200*u.arcsec, frame=mymap.coordinate_frame)
+smap = mymap.submap(bottom_left, top_right)
+#rsmap = radialise.map_rad(smap) # TODO: update outdated radialisation functions
+rsmap = smap
 
 ### plot figure ###
 fig = plt.figure(figsize=(6, 10))
