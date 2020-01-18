@@ -3,7 +3,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(
-    name='kde',
+    name='Sally_KDE',
     author='sallyda',
     version='0.0',
     url='https://github.com/sallyda/Sally_KDE',
