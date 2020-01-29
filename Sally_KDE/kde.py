@@ -45,23 +45,20 @@ def kde_plot(map3, logx=True, kern='gaussian', normed=True, ax=None, extrasmooth
     elif kern == 'box':
         y_coords = my_box_kde(x, pixl)
 
+    y_coordsn = copy.deepcopy(y_coords)
+    if normed:
+        num_pix = len(all_pix)
+        y_coords /= float(num_pix)
+        y_coordsn /= float(num_pix)
+
     fig_data = np.array((x, y_coords))
-    
+
     if ax == None: # return info without image
         return fig_data, all_pix
     
     fig_k = ax.plot()
     hist_pos_label, hist_neg_label = 'Positive', 'Negative'
-    
-    y_coordsn = copy.deepcopy(y_coords)
-    if normed:
-        num_ppix = len(all_pix[np.where(all_pix > bmin)])
-        num_npix = len(all_pix[np.where(all_pix < -bmin)])
-        y_coords /= float(num_ppix)
-        y_coordsn /= float(num_npix)
-    
-    fig_datap = np.array((x, y_coords))
-    fig_datan = np.array((-x, y_coordsn))
+
     ax.plot(x, y_coords, color='r', label=hist_pos_label, alpha=alpha)
     ax.plot(-x, y_coordsn, color='b', label=hist_neg_label, alpha=alpha)
 
@@ -81,7 +78,7 @@ def kde_plot(map3, logx=True, kern='gaussian', normed=True, ax=None, extrasmooth
     if addlegend:
         ax.legend(loc=1)
     
-    return fig_k, fig_datap, fig_datan, all_pix
+    return fig_k, fig_data, all_pix
 
 
 def my_kde(x, mylist, extrasmooth=1):
